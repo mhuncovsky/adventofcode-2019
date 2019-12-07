@@ -13,7 +13,7 @@ J)K
 K)L'''
 example_orbits = 42
 
-with open('day6_input', 'r') as f:
+with open('day6_input.txt', 'r') as f:
     part_1 = f.read()
 
 
@@ -23,7 +23,7 @@ def find_path(graph, start, end, path=None):
     path = path + [start]
     if start == end:
         return path
-    if not start in graph:
+    if start not in graph:
         return None
     for node in graph[start]:
         if node not in path:
