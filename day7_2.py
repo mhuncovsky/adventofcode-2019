@@ -128,10 +128,12 @@ class IntCode:
         self.running = False
         self.done = True
 
-    def run_program(self, noun, verb):
+    def run_program(self, noun, verb, program_inputs=None):
+        if program_inputs is None:
+            program_inputs = []
         self.memory[1] = noun
         self.memory[2] = verb
-        return self.run()
+        return self.run(program_inputs)
 
     def run(self, inputs):
         self.input_buffer.extend(inputs)
