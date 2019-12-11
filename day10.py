@@ -1,4 +1,5 @@
 import math
+from collections import defaultdict
 
 
 with open('day10_input.txt', 'r') as f:
@@ -54,10 +55,37 @@ def angle(x, y):
     return deg
 
 
+def normalize_los(los):
+    x, y =  los
+    xy_gcd = math.gcd(x, y)
+    return x / xy_gcd, y / xy_gcd
+
+
 center, _ = find_station(example)
 asteroids = get_asteriods(example)
 asteroids.remove(center)
 los = [get_los2(center, a) for a in asteroids]
+combined = list(zip(asteroids, los))
+left = [(a, la) for a, la in combined if la[0] < 0]
+middle = [(a, la) for a, la in combined if la[0] == 0]
+right = [(a, la) for a, la in combined if la[0] > 0]
+
+
+def screen(asteroid_data, reverse):
+    a_by_los = defaultdict(list)
+    for a, la in asteroid_data:
+        a_by_los[normalize_los(la)].append((a, la))
+    for k in a_by_los:
+        a_by_los[k] = sorted(a_by_los[k], key=lambda x: x[1][1], reverse=reverse)
+    sorted_by_x = sorted(a_by_los.keys(), key=lambda x: x[0], reverse=reverse)
+    deleted = []
+    for k in sorted_by_x:
+        a, la = a_by_los[k].pop(0)
+        deleted.append(a)
+        asteroid_data.remove((a, la))
+    return asteroid_data, deleted
+
+
 
 
 assert ((5, 8), 33) == find_station('''......#.#.
