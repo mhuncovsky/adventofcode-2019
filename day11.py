@@ -226,6 +226,7 @@ class PaintBot:
 
     def step(self):
         self.intcode.input_buffer.append(self.current_tile_color())
+        dp(f'CURRENT TILE COLOR: {self.current_tile_color()}')
 
         while not self.intcode.done and not len(self.intcode.output_buffer):
             self.intcode.tick()
@@ -257,6 +258,13 @@ class PaintBot:
             if STEP:
                 input()
 
+    def run_white_start(self):
+        self.white_panels.add(self.position)
+        while not self.intcode.done:
+            self.step()
+            if STEP:
+                input()
+
 
 with open('day11_input.txt', 'r') as f:
     input_data = [int(c) for c in f.read().split(',')]
@@ -266,3 +274,19 @@ bot = PaintBot(ic)
 bot.run()
 
 print(f'PAINTED AT LEAST ONCE: {len(bot.painted_panels)}')
+
+ic = IntCode(memory=input_data, input_buffer=deque())
+bot = PaintBot(ic)
+bot.run_white_start()
+white = list(bot.white_panels)
+xs, ys = zip(*white)
+min_x = min(xs)
+max_x = max(xs)
+min_y = min(ys)
+max_y = max(ys)
+
+for y in list(range(min_y, max_y + 1))[::-1]:
+    for x in range(min_x, max_x + 1):
+        tile = '#' if (x, y) in bot.white_panels else ' '
+        print(f'{tile}', end='')
+    print()
