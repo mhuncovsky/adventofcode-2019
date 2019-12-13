@@ -10,38 +10,6 @@ IntCode.DEBUG = False
 EMPTY, WALL, BLOCK, PADDLE, BALL = range(5)
 
 
-class Display(IO):
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.data = [0] * width * height
-        self.offset = 0
-
-    def __len__(self):
-        return self.width * self.height
-
-    def __iter__(self):
-        while True:
-            yield self.data[self.offset]
-            self.update_offset()
-
-    def update_offset(self):
-        self.offset = (self.offset + 1) % len(self)
-
-    def add(self, item):
-        self.data[self.offset] = item
-        self.update_offset()
-
-    def pop(self):
-        ret = self.data[self.offset]
-        self.update_offset()
-        return ret
-
-    def print(self):
-        lines = zip(*((iter(self.data),) * self.width))
-        print('\n'.join(''.join(str(c) for c in line) for line in lines))
-
-
 class ArcadeCabinet:
     def __init__(self, code):
         # self.display = display
